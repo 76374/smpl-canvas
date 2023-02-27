@@ -110,17 +110,29 @@ Removes all children from the container. `withDispose` argument is `true` by def
 The method is called from a `Stage` instance when the container is its direct or nested child. Depending on contained objects, it increases its size if the child is out of the container bounds defined by its width and height. For example, if the width of a container is 0, and it has a child with width = 5 and x = 10, the container's width will be 15 after the update. `updateLayout` call goes from the deeps child upward. Which means `updateLayout` is called in all child containers first. This method can be overridden to update the size differently or other properties before rendering.
 ## Inherited properties and methods
 [cursor: CursorType](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#cursor-cursortype-readwrite)
+ 
 [cursor: CursorType](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hitTestInBounds-boolean-readwrite)
+ 
 [click: Signal<MouseData>](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#mouseclick-signal-read-only)
+ 
 [mouseMove: Signal<MouseData>](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#mousemove-signal-read-only)
+ 
 [mouseOver: Signal<MouseData>](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#mouseover-signal-read-only)
+ 
 [mouseOut: Signal<MouseData>](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#mouseout-signal-read-only)
+ 
 [height: number](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#height-number-readwrite)
+ 
 [name: string](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#name-string-readwrite)
+ 
 [updated: Signal](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#width-number-readwrite)
+ 
 [width: number](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#updated-signal-readonly)
+ 
 [dispose()](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#dispose)
+ 
 [render(tools: RenderTools)](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#render-tools-rendertools)
+ 
 [hitTest(x: number, y: number): boolean](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittest-x-number-ynumber-boolean)
 # Stage
 Main container which handles render process and input events for nested display objects.
