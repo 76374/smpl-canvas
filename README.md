@@ -41,12 +41,12 @@ Triggers when the mouse cursor leaves the current object.
 Describes the length of the current object in y-axis. 0 by default. This value can be set when the object instance is created (e.g. in the constructor) to have correct layout calculation and avoid overlapping with other objects within layout containers like `VerticalLayout`, `Grid` etc. It doesn’t stretch or shrink the object by default. To redraw the object according to its new height the setter can be overridden to call the update signal to force the redrawing process if the height takes place in the render method.
 In the following example the display object is a vertical line, which is updated when its width changes.
 ```
-override set height (value: number) {
+override set height(value: number) {
  super.height = value
  this.updated.emit()
 }
 
-override render (tools: RenderTools) {
+override render(tools: RenderTools) {
  tools.line([{ x: 0, y: 0 }, { x: this.height, y: 0}])
 }
 ```
@@ -58,9 +58,9 @@ Needs to be triggered every time when the object instance is changed and require
 Describes the width of the current object. Works similar to height property but for y axis, check details there.
 
 ## Instance methods
-### render(tools: RenderTools)
+### render (tools: RenderTools)
 The method is supposed to be overridden to use `RenderTools` passed as the argument in order to provide instructions to render shapes, lines, etc. 
-### hitTest(x: number, y:number): boolean
+### hitTest (x: number, y:number): boolean
 Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If `hitTestInBounds` property has been set to true, the method checks if the coordinates are within a rect defined by `width` and `height` of the current object.
 ```
 // circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius
@@ -70,7 +70,7 @@ override hitTest (x: number, y: number): boolean {
 ```                                                                                 
 ### dispose
 Cleans up all signals. Can be overridden to clean up custom ones or remove references to other objects to avoid memory leaks.
-`RenderTools`
+# RenderTools
 Provides an interface to draw shapes, lines, text. A `RenderTools` instance is provided to the render method of `DisplayObject` as an argument. By calling the methods described below it accumulates data which is used in `Render` to draw display objects. To make the drawing process work it is enough to create a `Stage` instance and add a display object as its child. Draw methods return the current instance to chain calls.
 ```
 const stage = new Stage(document.getElementById('canvas'))
@@ -82,89 +82,60 @@ stage.addChild(rect)
 ### renderProps: RenderProps[] (readonly)
 Information which is used by Render about sequence of operation required for object drawing. 
 ## Instance methods:
-### lines
-Draws a broken line defined by provided points.
-
-Arguments:
- 
-**line**: Point[] - points to line or broken line (polygonal chain)
-
-**color**: string (optional) - color of the stroke
-
-Return value: **RenderTools** - current instance to chain drawing methods
-#### circle
-Draws a circle.
-                                                                                  
-Arguments:
-                                                                                  
-**circle**: Circle - data structure that defines center, radius, fill and stroke colors of the circle.
-
-Return value: *RenderTools* - current instance to chain drawing methods
-#### shape
-**shape**: Shape - data structure that defines points to build various shapes, their fill and stroke color.
-
-Return value: **RenderTools** - current instance to chain drawing methods
-#### text
-Renders text. It is used by TextField and in most cases rendering text can be done using that class.
-
-Arguments:
-
-**text**: string - text to render
-
-**textProps**: TextProps - font, size, leading for the text
-
-Return value: **RenderTools** - current instance to chain drawing methods
-#### textLines
-Similar to the text property but can render multiline text.
-
-Arguments:
-
-**lines**: string[] - lines of text
-
-**textProps**: TextProps - font, size, leading for the text
-
-Return value: *RenderTools* - current instance to chain drawing methods
-## DisplayObjectContainer
+### line (line: Point[], color?: string): RenderTools 
+Draws a broken line defined by provided points abd color. Returns current instance to chain draw calls.
+### circle (circle: Circle): RenderTools
+Draws a circle. `Circle` data structure defines center, radius, fill and stroke colors. Returns current instance to chain draw calls.
+### shape (shape: Shape): RenderTools
+Draws a shape defined by `Shape` data structure which includes points to build various shapes, their fill and stroke color. Returns current instance to chain draw calls.
+### text (text: string, textProps: TextProps): RenderTools
+Takes text string and its properties like font, size, leading as arguments. It is used by `TextField` and in most cases text rendering can be done using that class. Returns current instance to chain draw calls.
+### textLines (lines: string[], textProps?: TextProps): RenderTools
+Similar to the `text` property but take a string array as an argument to render multiline text.
+# DisplayObjectContainer
 Visual container for display objects. Child position becomes relative to its parent after adding. As it extends DisplayObject, it has all its possibilities for positioning, rendering etc,  and it can contain other containers as well.
-### Static methods
-#### isContainer
-Checks if the argument is an instance of the DisplayObjectContainer class.
-Arguments:
-obj: any. Any object to be tested
-Return value: boolean.
-Instance methods
-addChild
-Arguments:
-displayObject: DisplayObject. A display object to be added to the container.
-foreachChild
-Similar to foreach in Array, makes loop through all children of the container.
-Arguments:
-callbackFn: Function. A function that takes displayObject as the argument.
-removeChild
-Arguments:
-displayObject: DisplayObject. A display object to be removed from the container.
-removeAll
-Removes all children from the container.
-Arguments:
-withDispose: boolean (optional). Calls the dispose method in all children when removing them.
-updateLayout
-The method is called from a Stage instance when the container is its direct or nested child. Depending on contained objects, it increases its size if the child is out of the container bounds defined by its width and height. For example, if the width of a container is 0, and it has a child with width = 5 and x = 10, the container's width will be 15 after the update. 
-updateLayout call goes from the deeps child upward. Which means updateLayout is called in all child containers first. This method can be overridden to update the size differently or other properties before rendering.
-Inherited properties and methods
-cursor: CursorType
+## Static methods
+### isContainer (obj: any): boolean
+Checks if the argument is an instance of the `DisplayObjectContainer` class.
+## Instance methods
+### addChild (displayObject: DisplayObject): DisplayObject
+Adds provided `displayObject` to the container. Returns provided display object.
+### foreachChild (callbackFn: (child: DisplayObject) => void)
+Similar to foreach in Array, makes loop through all children of the container. Provided function that takes displayObject as the argument.
+### removeChild (displayObject: DisplayObject)
+Removes provided `displayObject` from the container.
+### removeAll (withDispose = true)
+Removes all children from the container. `withDispose` argument is `true` by default and when it is `true` it calls `dispose` method in all children when removing them.
+### updateLayout ()
+The method is called from a `Stage` instance when the container is its direct or nested child. Depending on contained objects, it increases its size if the child is out of the container bounds defined by its width and height. For example, if the width of a container is 0, and it has a child with width = 5 and x = 10, the container's width will be 15 after the update. `updateLayout` call goes from the deeps child upward. Which means `updateLayout` is called in all child containers first. This method can be overridden to update the size differently or other properties before rendering.
+## Inherited properties and methods
+**cursor: CursorType
+ 
 hitTestInBounds: boolean 
+ 
 mouseClick: Signal<MouseData>
+ 
 mouseMove: Signal<MouseData>
+ 
 mouseOver: Signal<MouseData>
+ 
 mouseOut: Signal<MouseData>
+ 
 height: number
+ 
 name: string
+ 
 updated: Signal
+ 
 width: number
+ 
 dispose()
+ 
 render(tools: RenderTools)
-hitTest(x: number, y: number): boolean
-Stage
+ 
+hitTest(x: number, y: number): boolean**
+ 
+# Stage
 Main container which handles render process and input events for nested display objects.
 Update process includes next steps:
 Cleaning up the canvas
