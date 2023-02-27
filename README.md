@@ -1,8 +1,7 @@
-# Classes
-## DisplayObject
+# DisplayObject
 A base class to draw primitives. This class is supposed to be overridden to provide instructions on: how to draw it, behave depending on mouse events, etc. An instance of the subclasses needs to be used as a child of a Stage instance to be rendered and receive input events.
-### Instance properties
-#### cursor: CursorType (read/write)
+## Instance properties
+### cursor: CursorType (read/write)
 Is used to change the type of mouse cursor when it is over the current display object. Checking if the object is under mouse cursor depends on the hitTest method.
 hitTestInBounds: boolean (read/write)
 When the value is set to true, the hitTest method returns true (if it’s not overridden) when the mouse cursor is within a rectangle defined by width and height of the current display object. 
@@ -18,7 +17,7 @@ constructor () {
  this.hitTestInBounds = true
 }
 ```
-#### mouseClick: Signal<MouseData> (read-only)
+### mouseClick: Signal<MouseData> (read-only)
 Triggers when the current object is clicked. 
 Example:
 ```
@@ -32,13 +31,13 @@ private handleClick (mouseData: MouseData) {
 }
 ```
 **Note: Object bounds for mouse events are defined by the hitTest method.**
-#### mouseMove: Signal<MouseData> (read-only)
+### mouseMove: Signal<MouseData> (read-only)
 Triggers when the mouse cursor moves over the current object.
-#### mouseOver: Signal<MouseData> (read-only)
+### mouseOver: Signal<MouseData> (read-only)
 Triggers when the mouse cursor enters the current object.
-#### mouseOut: Signal<MouseData> (read-only)
+### mouseOut: Signal<MouseData> (read-only)
 Triggers when the mouse cursor leaves the current object.
-#### height: number (read/write)
+### height: number (read/write)
 Describes the length of the current object in y-axis. 0 by default. This value can be set when the object instance is created (e.g. in the constructor) to have correct layout calculation and avoid overlapping with other objects within layout containers like `VerticalLayout`, `Grid` etc. It doesn’t stretch or shrink the object by default. To redraw the object according to its new height the setter can be overridden to call the update signal to force the redrawing process if the height takes place in the render method.
 In the following example the display object is a vertical line, which is updated when its width changes.
 ```
@@ -51,19 +50,19 @@ override render (tools: RenderTools) {
  tools.line([{ x: 0, y: 0 }, { x: this.height, y: 0}])
 }
 ```
-#### name: string (read/write)
+### name: string (read/write)
 Defines an object instance name. Can be used to distinguish or find the object in the display objects tree.
 updated: Signal (read-only)
 Needs to be triggered every time when the object instance is changed and requires redrawing. See the example in the height property description.
-#### width: number (read/write)
+### width: number (read/write)
 Describes the width of the current object. Works similar to height property but for y axis, check details there.
 
-### Instance methods
-#### render
+## Instance methods
+### render
 The method is supposed to be overridden to use render tools passed as the argument in order to provide instructions to Render shapes, lines, etc. See RenderTools class.
 Arguments:
 **renderTools**: RenderTools - an object that describes how it needs to be rendered. It is empty by default.
-### hitTest
+## hitTest
 By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If `hitTestInBounds` property has been set to true, the method checks if the coordinates are within a rect defined by `width` and `height` of the current object.
 Arguments:
 **x, y**: number.  Coordinates of the mouse cursor in the object local dimension 
@@ -75,7 +74,7 @@ override hitTest (x: number, y: number): boolean {
  }
 }
 ```                                                                                 
-#### dispose
+### dispose
 Cleans up all signals. Can be overridden to clean up custom ones or remove references to other objects to avoid memory leaks.
 `RenderTools`
 Provides an interface to draw shapes, lines, text. A `RenderTools` instance is provided to the render method of `DisplayObject` as an argument. By calling the methods described below it accumulates data which is used in `Render` to draw display objects. To make the drawing process work it is enough to create a `Stage` instance and add a display object as its child. Draw methods return the current instance to chain calls.
@@ -85,35 +84,51 @@ const rect = new RectContainer()
 rect.fillColor = 'blue'
 stage.addChild(rect)
 ```
-### Instance properties:
-#### renderProps: RenderProps[] (readonly)
+## Instance properties:
+### renderProps: RenderProps[] (readonly)
 Information which is used by Render about sequence of operation required for object drawing. 
-#### Instance methods:
-lines
+## Instance methods:
+### lines
 Draws a broken line defined by provided points.
+
 Arguments:
-*line*: Point[] - points to line or broken line (polygonal chain)
-*color*: string (optional) - color of the stroke
-Return value: *RenderTools* - current instance to chain drawing methods
+ 
+**line**: Point[] - points to line or broken line (polygonal chain)
+
+**color**: string (optional) - color of the stroke
+
+Return value: **RenderTools** - current instance to chain drawing methods
 #### circle
 Draws a circle.
+                                                                                  
 Arguments:
-*circle*: Circle - data structure that defines center, radius, fill and stroke colors of the circle.
+                                                                                  
+**circle**: Circle - data structure that defines center, radius, fill and stroke colors of the circle.
+
 Return value: *RenderTools* - current instance to chain drawing methods
 #### shape
-*shape*: Shape - data structure that defines points to build various shapes, their fill and stroke color.
-Return value: *RenderTools* - current instance to chain drawing methods
+**shape**: Shape - data structure that defines points to build various shapes, their fill and stroke color.
+
+Return value: **RenderTools** - current instance to chain drawing methods
 #### text
 Renders text. It is used by TextField and in most cases rendering text can be done using that class.
+
 Arguments:
-*text*: string - text to render
-*textProps*: TextProps - font, size, leading for the text
-Return value: *RenderTools* - current instance to chain drawing methods
+
+**text**: string - text to render
+
+**textProps**: TextProps - font, size, leading for the text
+
+Return value: **RenderTools** - current instance to chain drawing methods
 #### textLines
 Similar to the text property but can render multiline text.
+
 Arguments:
-*lines*: string[] - lines of text
-*textProps*: TextProps - font, size, leading for the text
+
+**lines**: string[] - lines of text
+
+**textProps**: TextProps - font, size, leading for the text
+
 Return value: *RenderTools* - current instance to chain drawing methods
 ## DisplayObjectContainer
 Visual container for display objects. Child position becomes relative to its parent after adding. As it extends DisplayObject, it has all its possibilities for positioning, rendering etc,  and it can contain other containers as well.
