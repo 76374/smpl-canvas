@@ -58,20 +58,14 @@ Needs to be triggered every time when the object instance is changed and require
 Describes the width of the current object. Works similar to height property but for y axis, check details there.
 
 ## Instance methods
-### render
-The method is supposed to be overridden to use render tools passed as the argument in order to provide instructions to Render shapes, lines, etc. See RenderTools class.
-
-**renderTools**: RenderTools - an object that describes how it needs to be rendered. It is empty by default.
-## hitTest
-By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If `hitTestInBounds` property has been set to true, the method checks if the coordinates are within a rect defined by `width` and `height` of the current object.
-
-**x, y**: number.  Coordinates of the mouse cursor in the object local dimension 
-Return value: boolean. When it is true, mouse signals (mouseMove, click, etc) will be triggered.
-The following example represents a circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius.
+### render(tools: RenderTools)
+The method is supposed to be overridden to use `RenderTools` passed as the argument in order to provide instructions to render shapes, lines, etc. 
+### hitTest(x: number, y:number): boolean
+Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If `hitTestInBounds` property has been set to true, the method checks if the coordinates are within a rect defined by `width` and `height` of the current object.
 ```
+// circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius
 override hitTest (x: number, y: number): boolean {
-   return Math.sqrt((x - this.radius) ** 2 + (y - this.radius) ** 2) <= this.radius
- }
+ return Math.sqrt((x - this.radius) ** 2 + (y - this.radius) ** 2) <= this.radius
 }
 ```                                                                                 
 ### dispose
