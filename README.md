@@ -8,6 +8,7 @@ hitTestInBounds: boolean (read/write)
 When the value is set to true, the hitTest method returns true (if it’s not overridden) when the mouse cursor is within a rectangle defined by width and height of the current display object. 
 Example:
 Makes the “pointer cursor” over a square area size of 20 pixels.
+```
 constructor () {
  super()
 
@@ -16,9 +17,11 @@ constructor () {
  this.cursor = 'pointer'
  this.hitTestInBounds = true
 }
-mouseClick: Signal<MouseData> (read-only)
+```
+#### mouseClick: Signal<MouseData> (read-only)
 Triggers when the current object is clicked. 
 Example:
+```
 constructor () {
   super()
   this.click.add(this.handleClick, this)
@@ -27,16 +30,18 @@ constructor () {
 private handleClick (mouseData: MouseData) {
   // perform actions
 }
-Note: Object bounds for mouse events are defined by the hitTest method.
-mouseMove: Signal<MouseData> (read-only)
+```
+**Note: Object bounds for mouse events are defined by the hitTest method.**
+#### mouseMove: Signal<MouseData> (read-only)
 Triggers when the mouse cursor moves over the current object.
-mouseOver: Signal<MouseData> (read-only)
+#### mouseOver: Signal<MouseData> (read-only)
 Triggers when the mouse cursor enters the current object.
-mouseOut: Signal<MouseData> (read-only)
+#### mouseOut: Signal<MouseData> (read-only)
 Triggers when the mouse cursor leaves the current object.
-height: number (read/write)
+#### height: number (read/write)
 Describes the length of the current object in y-axis. 0 by default. This value can be set when the object instance is created (e.g. in the constructor) to have correct layout calculation and avoid overlapping with other objects within layout containers like VerticalLayout, Grid etc. It doesn’t stretch or shrink the object by default. To redraw the object according to its new height the setter can be overridden to call the update signal to force the redrawing process if the height takes place in the render method.
 In the following example the display object is a vertical line, which is updated when its width changes.
+```
 override set height (value: number) {
  super.height = value
  this.updated.emit()
@@ -45,20 +50,21 @@ override set height (value: number) {
 override render (tools: RenderTools) {
  tools.line([{ x: 0, y: 0 }, { x: this.height, y: 0}])
 }
-name: string (read/write)
+```
+#### name: string (read/write)
 Defines an object instance name. Can be used to distinguish or find the object in the display objects tree.
 updated: Signal (read-only)
 Needs to be triggered every time when the object instance is changed and requires redrawing. See the example in the height property description.
-width: number (read/write)
+#### width: number (read/write)
 Describes the width of the current object. Works similar to height property but for y axis, check details there.
 
-Instance methods
-render
+### Instance methods
+#### render
 The method is supposed to be overridden to use render tools passed as the argument in order to provide instructions to Render shapes, lines, etc. See RenderTools class.
 Arguments:
-renderTools: RenderTools - an object that describes how it needs to be rendered. It is empty by default.
+**renderTools**: RenderTools - an object that describes how it needs to be rendered. It is empty by default.
 hitTest
-By default returns false. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by Stage automatically when the display object is direct or nested its child. If hitTestInBounds property has been set to true, the method checks if the coordinates are within a rect defined by width, height of the current object.
+By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If hitTestInBounds property has been set to true, the method checks if the coordinates are within a rect defined by width, height of the current object.
 Arguments:
 x, y: number.  Coordinates of the mouse cursor in the object local dimension 
 Return value: boolean. When it is true, mouse signals (mouseMove, click, etc) will be triggered.
