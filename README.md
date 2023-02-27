@@ -39,7 +39,7 @@ Triggers when the mouse cursor enters the current object.
 #### mouseOut: Signal<MouseData> (read-only)
 Triggers when the mouse cursor leaves the current object.
 #### height: number (read/write)
-Describes the length of the current object in y-axis. 0 by default. This value can be set when the object instance is created (e.g. in the constructor) to have correct layout calculation and avoid overlapping with other objects within layout containers like VerticalLayout, Grid etc. It doesn’t stretch or shrink the object by default. To redraw the object according to its new height the setter can be overridden to call the update signal to force the redrawing process if the height takes place in the render method.
+Describes the length of the current object in y-axis. 0 by default. This value can be set when the object instance is created (e.g. in the constructor) to have correct layout calculation and avoid overlapping with other objects within layout containers like `VerticalLayout`, `Grid` etc. It doesn’t stretch or shrink the object by default. To redraw the object according to its new height the setter can be overridden to call the update signal to force the redrawing process if the height takes place in the render method.
 In the following example the display object is a vertical line, which is updated when its width changes.
 ```
 override set height (value: number) {
@@ -63,61 +63,62 @@ Describes the width of the current object. Works similar to height property but 
 The method is supposed to be overridden to use render tools passed as the argument in order to provide instructions to Render shapes, lines, etc. See RenderTools class.
 Arguments:
 **renderTools**: RenderTools - an object that describes how it needs to be rendered. It is empty by default.
-hitTest
-By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If hitTestInBounds property has been set to true, the method checks if the coordinates are within a rect defined by width, height of the current object.
+### hitTest
+By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If `hitTestInBounds` property has been set to true, the method checks if the coordinates are within a rect defined by `width` and `height` of the current object.
 Arguments:
-x, y: number.  Coordinates of the mouse cursor in the object local dimension 
+**x, y**: number.  Coordinates of the mouse cursor in the object local dimension 
 Return value: boolean. When it is true, mouse signals (mouseMove, click, etc) will be triggered.
 The following example represents a circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius.
+```
 override hitTest (x: number, y: number): boolean {
    return Math.sqrt((x - this.radius) ** 2 + (y - this.radius) ** 2) <= this.radius
  }
 }
-dispose
+```                                                                                 
+#### dispose
 Cleans up all signals. Can be overridden to clean up custom ones or remove references to other objects to avoid memory leaks.
-RenderTools
-Provides an interface to draw shapes, lines, text. A RenderTools instance is provided to the render method of DisplayObject as an argument. By calling the methods described below it accumulates data which is used in Render to draw display objects. To make the drawing process work it is enough to create a Stage instance and add a display object as its child. 
+`RenderTools`
+Provides an interface to draw shapes, lines, text. A `RenderTools` instance is provided to the render method of `DisplayObject` as an argument. By calling the methods described below it accumulates data which is used in `Render` to draw display objects. To make the drawing process work it is enough to create a `Stage` instance and add a display object as its child. Draw methods return the current instance to chain calls.
+```
 const stage = new Stage(document.getElementById('canvas'))
 const rect = new RectContainer()
 rect.fillColor = 'blue'
 stage.addChild(rect)
-Draw methods return the current instance to chain calls.
-Instance properties:
-renderProps: RenderProps[] (readonly)
+```
+### Instance properties:
+#### renderProps: RenderProps[] (readonly)
 Information which is used by Render about sequence of operation required for object drawing. 
-Instance methods:
+#### Instance methods:
 lines
 Draws a broken line defined by provided points.
 Arguments:
-line: Point[] - points to line or broken line (polygonal chain)
-color: string (optional) - color of the stroke
-Return value: RenderTools - current instance to chain drawing methods
-circle
+*line*: Point[] - points to line or broken line (polygonal chain)
+*color*: string (optional) - color of the stroke
+Return value: *RenderTools* - current instance to chain drawing methods
+#### circle
 Draws a circle.
 Arguments:
-circle: Circle - data structure that defines center, radius, fill and stroke colors of the circle.
-Return value: RenderTools - current instance to chain drawing methods
-shape
-shape: Shape - data structure that defines points to build various shapes, their fill and stroke color.
-Return value: RenderTools - current instance to chain drawing methods
-text
+*circle*: Circle - data structure that defines center, radius, fill and stroke colors of the circle.
+Return value: *RenderTools* - current instance to chain drawing methods
+#### shape
+*shape*: Shape - data structure that defines points to build various shapes, their fill and stroke color.
+Return value: *RenderTools* - current instance to chain drawing methods
+#### text
 Renders text. It is used by TextField and in most cases rendering text can be done using that class.
 Arguments:
-text: string - text to render
-textProps: TextProps - font, size, leading for the text
-Return value: RenderTools - current instance to chain drawing methods
-textLines
+*text*: string - text to render
+*textProps*: TextProps - font, size, leading for the text
+Return value: *RenderTools* - current instance to chain drawing methods
+#### textLines
 Similar to the text property but can render multiline text.
 Arguments:
-lines: string[] - lines of text
-textProps: TextProps - font, size, leading for the text
-Return value: RenderTools - current instance to chain drawing methods
-
-
-DisplayObjectContainer
+*lines*: string[] - lines of text
+*textProps*: TextProps - font, size, leading for the text
+Return value: *RenderTools* - current instance to chain drawing methods
+## DisplayObjectContainer
 Visual container for display objects. Child position becomes relative to its parent after adding. As it extends DisplayObject, it has all its possibilities for positioning, rendering etc,  and it can contain other containers as well.
-Static methods
-isContainer
+### Static methods
+#### isContainer
 Checks if the argument is an instance of the DisplayObjectContainer class.
 Arguments:
 obj: any. Any object to be tested
@@ -261,6 +262,3 @@ const button = new CircleButton(40)
 button.x = 20
 button.y = 20
 stage.addChild(button)
-
-
-
