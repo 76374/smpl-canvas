@@ -109,8 +109,7 @@ Removes all children from the container. `withDispose` argument is `true` by def
 ### updateLayout ()
 The method is called from a `Stage` instance when the container is its direct or nested child. Depending on contained objects, it increases its size if the child is out of the container bounds defined by its width and height. For example, if the width of a container is 0, and it has a child with width = 5 and x = 10, the container's width will be 15 after the update. `updateLayout` call goes from the deeps child upward. Which means `updateLayout` is called in all child containers first. This method can be overridden to update the size differently or other properties before rendering.
 ## Inherited properties and methods
-**cursor: CursorType
- 
+([cursor: CursorType](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#cursor-cursortype-readwrite))
 hitTestInBounds: boolean 
  
 mouseClick: Signal<MouseData>
