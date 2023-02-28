@@ -61,7 +61,7 @@ Describes the width of the current object. Works similar to height property but 
 ### render (tools: RenderTools)
 The method is supposed to be overridden to use [RenderTools](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#rendertools) passed as the argument in order to provide instructions to render shapes, lines, etc. 
 ### hitTest (x: number, y:number): boolean
-Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) automatically when the display object is direct or nested its child. If [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittestinbounds-boolean-readwrite) property has been set to true, the method checks if the coordinates are within a rect defined by [width](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#width-number-readwrite) and `height` of the current object.
+Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) automatically when the display object is direct or nested its child. If [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittestinbounds-boolean-readwrite) property has been set to true, the method checks if the coordinates are within a rect defined by [width](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#width-number-readwrite) and [height](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#height-number-readwrite) of the current object.
 ```
 // circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius
 override hitTest (x: number, y: number): boolean {
@@ -71,7 +71,7 @@ override hitTest (x: number, y: number): boolean {
 ### dispose
 Cleans up all signals. Can be overridden to clean up custom ones or remove references to other objects to avoid memory leaks.
 # RenderTools
-Provides an interface to draw shapes, lines, text. A `RenderTools` instance is provided to the render method of `DisplayObject` as an argument. By calling the methods described below it accumulates data which is used in `Render` to draw display objects. To make the drawing process work it is enough to create a `Stage` instance and add a display object as its child. Draw methods return the current instance to chain calls.
+Provides an interface to draw shapes, lines, text. A RenderTools instance is provided to the render method of [DisplayObject](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#displayobject) as an argument. By calling the methods described below it accumulates data which is used in `Render` to draw display objects. To make the drawing process work it is enough to create a [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) instance and add a display object as its child. Draw methods return the current instance to chain calls.
 ```
 const stage = new Stage(document.getElementById('canvas'))
 const rect = new RectContainer()
@@ -91,7 +91,7 @@ Draws a shape defined by `Shape` data structure which includes points to build v
 ### text (text: string, textProps: TextProps): RenderTools
 Takes text string and its properties like font, size, leading as arguments. It is used by `TextField` and in most cases text rendering can be done using that class. Returns current instance to chain draw calls.
 ### textLines (lines: string[], textProps?: TextProps): RenderTools
-Similar to the `text` property but take a string array as an argument to render multiline text.
+Similar to the [text](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#text-text-string-textprops-textprops-rendertools) property but take a string array as an argument to render multiline text.
 # DisplayObjectContainer
 Visual container for display objects. Child position becomes relative to its parent after adding. As it extends DisplayObject, it has all its possibilities for positioning, rendering etc,  and it can contain other containers as well.
 ## Static methods
@@ -99,15 +99,15 @@ Visual container for display objects. Child position becomes relative to its par
 Checks if the argument is an instance of the `DisplayObjectContainer` class.
 ## Instance methods
 ### addChild (displayObject: DisplayObject): DisplayObject
-Adds provided `displayObject` to the container. Returns provided display object.
+Adds provided `displayObject` to the container and returns it.
 ### foreachChild (callbackFn: (child: DisplayObject) => void)
-Similar to foreach in Array, makes loop through all children of the container. Provided function that takes displayObject as the argument.
+Similar to `foreach` in `Array`, makes loop through all children of the container. Provided function that takes a `DisplayObject` instance as the argument.
 ### removeChild (displayObject: DisplayObject)
 Removes provided `displayObject` from the container.
 ### removeAll (withDispose = true)
 Removes all children from the container. `withDispose` argument is `true` by default and when it is `true` it calls `dispose` method in all children when removing them.
 ### updateLayout ()
-The method is called from a `Stage` instance when the container is its direct or nested child. Depending on contained objects, it increases its size if the child is out of the container bounds defined by its width and height. For example, if the width of a container is 0, and it has a child with width = 5 and x = 10, the container's width will be 15 after the update. `updateLayout` call goes from the deeps child upward. Which means `updateLayout` is called in all child containers first. This method can be overridden to update the size differently or other properties before rendering.
+The method is called from a [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) instance when the container is its direct or nested child. Depending on contained objects, it increases its size if the child is out of the container bounds defined by its width and height. For example, if the width of a container is 0, and it has a child with width = 5 and x = 10, the container's width will be 15 after the update. `updateLayout` call goes from the deeps child upward. Which means `updateLayout` is called in all child containers first. This method can be overridden to update the size differently or other properties before rendering.
 ## Inherited properties and methods
 [cursor: CursorType](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#cursor-cursortype-readwrite)
  
