@@ -136,24 +136,22 @@ The method is called from a `Stage` instance when the container is its direct or
 [hitTest(x: number, y: number): boolean](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittest-x-number-ynumber-boolean)
 # Stage
 Main container which handles render process and input events for nested display objects.
+ 
 Update process includes next steps:
-Cleaning up the canvas
-Unregistering objects which are not belong to Stage direct or nested children. E.g. which were removed using removeChild method of any of nested DisplayObjectContainers.
-Registering new objects that were added to the rendre hierarchy (become direct or nested children).
+1. Cleaning up the canvas
+2. Unregistering objects which are not belong to Stage direct or nested children. E.g. which were removed using removeChild method of any of nested DisplayObjectContainers.
+2. Registering new objects that were added to the rendre hierarchy (become direct or nested children).
 updating layouts: calling updateLayout methods of DisplayObjectContainers, TextFields starting from the deepest child going upwards until it meats Stage.
-Updating canvas size
-Rendering all display objects (using their render methods)
-Constructor
-arguments:
-canvas: HTMLCanvasElement - target canvas HTML element.
-Instance methods
-forceUpdate
-Forces redraw process.
-localToGlobal
-Converts object position to global coordinates.
-Arguments:
-displayObject: DisplayObject - target display object
-Return value: Point - a point in global coordinates
+3. Updating canvas size
+4. Rendering all display objects (using their render methods)
+## Constructor
+Required HTMLCanvasElement as an argument.
+## Instance methods
+### forceUpdate ()
+Forces redraw process. Usually, when redrawing is required, `DispalyObject` instances call their `update` signal. But if for some reason update is needed in other way, `forceUpdate` can be calles instead. 
+### localToGlobal (displayObject: DisplayObject): Point
+Converts object position to global coordinates. It takes nested `DisplayObject` instance and returns its position in global coordinates
+```
 const stage = new Stage(canvas)
 
 const container = new DisplayObjectContainer()
@@ -167,7 +165,8 @@ button.y = 20
 container.addChild(button)
 
 stage.localToGlobal(button) // { x: 30, y: 50 }
-Inherited properties and methods
+```
+## Inherited properties and methods
 cursor: CursorType
 hitTestInBounds: boolean 
 mouseClick: Signal<MouseData>
@@ -186,9 +185,9 @@ hitTest(x: number, y: number): boolean
 removeChild(displayObject: DisplayObject)
 removeAll()
 updateLayout()
-Example
+# Example
 The following example represents a circle red button. It changes color from green to red after clicking on it.
-
+```
 class CircleButton extends DisplayObject {
  // the button color depends on this value
  private isOn = false
@@ -241,3 +240,4 @@ const button = new CircleButton(40)
 button.x = 20
 button.y = 20
 stage.addChild(button)
+```
