@@ -17,6 +17,7 @@ stage.width = 100
 stage.height = 100
 stage.addChild(new Circle())
 ```
+[Output](/ex001.png)
 To make an object interactive i.e. receive input events, it needs to extend the [hitTest](https://github.com/alexbolbat/smpl-canvas#hittest-x-number-ynumber-boolean) method to define object bounds. If an area to click needs to be defined by object size and position, it’s enough to assign the [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas#hittestinbounds-boolean-readwrite) property.
 ```
 class Circle extends DisplayObject {
@@ -39,6 +40,7 @@ override hitTest (x: number, y: number): boolean {
 }
 ```
 To redraw the object, there is an [update](https://github.com/alexbolbat/smpl-canvas#updated-signal-read-only) signal property. It is used when visual changes need to be applied. It tells [Stage](https://github.com/alexbolbat/smpl-canvas#stage) the object was changed and it will redraw the object on the next frame
+```
 private isOn = false
 
 constructor (radius: number) {
@@ -62,6 +64,7 @@ override render (renderTools: RenderTools) {
    x: 40,
    y: 40,
    radius: 40,
+   // changing color depending on isOn property
    fillColor: this.isOn ? '#d93434' : '#2ac942'
  })
 }
@@ -70,11 +73,15 @@ override hitTest (x: number, y: number): boolean {
   const radius = Math.min(this.width, this.height) / 2
   return Math.sqrt((x - radius) ** 2 + (y - radius) ** 2) <= radius
 }
+```
 Display objects can be grouped and stored in containers. Base class for containers is [DisplayObjectContainer](https://github.com/alexbolbat/smpl-canvas#displayobjectcontainer).
+```
 const container = new DisplayObjectContainer()
 container.addChild(new Circle(40, 'green'))
 container.addChild(new Circle(40, 'red')).x = 90
 stage.addChild(container)
+```
+[Output](/ex002.png)
 Their inheritance can be used as creating objects templates. As [DisplayObjectContainer](https://github.com/alexbolbat/smpl-canvas#displayobjectcontainer) extends [DisplayObject](https://github.com/alexbolbat/smpl-canvas#displayobject), it also can render primitives. Child components are drawn on top of their parents.
 ```
 class PairOfCircles extends DisplayObjectContainer {
@@ -90,6 +97,7 @@ const container = new DisplayObjectContainer()
 container.addChild(new PairOfCircles())
 container.addChild(new PairOfCircles()).y = 90
 stage.addChild(container)
+[Output](/ex003.png)
 ```
 Some components like `Grid`, `VerticalLayout` are able to manage their children's positioning automatically. It is achieved using the [updateLayout](https://github.com/alexbolbat/smpl-canvas#updatelayout-) method. This method is called before drawing and can be overridden to implement custom positioning and sizing.
 ```
@@ -100,6 +108,7 @@ colors.forEach((color, i) => {
  grid.addInCell(new TextField(color), i, 1)
 })
 stage.addChild(grid)
+[Output](/ex004.png)
 ```
 # Class diagram
 ![Class diagram](/canvas.drawio.png)
