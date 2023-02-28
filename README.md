@@ -30,7 +30,7 @@ private handleClick (mouseData: MouseData) {
   // perform actions
 }
 ```
-**Note: Object bounds for mouse events are defined by the hitTest method.**
+**Note: Object bounds for mouse events are defined by the [hitTest](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittest-x-number-ynumber-boolean) method.**
 ### mouseMove: Signal<MouseData> (read-only)
 Triggers when the mouse cursor moves over the current object.
 ### mouseOver: Signal<MouseData> (read-only)
@@ -53,15 +53,15 @@ override render(tools: RenderTools) {
 ### name: string (read/write)
 Defines an object instance name. Can be used to distinguish or find the object in the display objects tree.
 ### updated: Signal (read-only)
-Needs to be triggered every time when the object instance is changed and requires redrawing. See the example in the height property description.
+Needs to be triggered every time when the object instance is changed and requires redrawing. See the example in the [height](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#height-number-readwrite) property description.
 ### width: number (read/write)
 Describes the width of the current object. Works similar to height property but for y axis, check details there.
 
 ## Instance methods
 ### render (tools: RenderTools)
-The method is supposed to be overridden to use `RenderTools` passed as the argument in order to provide instructions to render shapes, lines, etc. 
+The method is supposed to be overridden to use [RenderTools](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#rendertools) passed as the argument in order to provide instructions to render shapes, lines, etc. 
 ### hitTest (x: number, y:number): boolean
-Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by `Stage` automatically when the display object is direct or nested its child. If `hitTestInBounds` property has been set to true, the method checks if the coordinates are within a rect defined by `width` and `height` of the current object.
+Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) automatically when the display object is direct or nested its child. If [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittestinbounds-boolean-readwrite) property has been set to true, the method checks if the coordinates are within a rect defined by [width](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#width-number-readwrite) and `height` of the current object.
 ```
 // circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius
 override hitTest (x: number, y: number): boolean {
