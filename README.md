@@ -1,7 +1,110 @@
+# Basic usage
+All objects or their parts which need to be rendered, need to extend the [DisplayObject](https://github.com/alexbolbat/smpl-canvas#displayobject) class and be a direct or nested child of a [Stage](https://github.com/alexbolbat/smpl-canvas#stage) instance. There are some ready to use classes from the box, but in most cases there might be a need to write custom classes which extend [DisplayObject](https://github.com/alexbolbat/smpl-canvas#displayobject). To provide instructions on how to render an object, it’s necessary to override the `render` method and use [RenderTools](https://github.com/alexbolbat/smpl-canvas#rendertools) provided there as an argument to draw shapes, lines, text.
+```
+class Circle extends DisplayObject {
+ override render (renderTools: RenderTools) {
+   renderTools.circle({
+     x: 40,
+     y: 40,
+     radius: 40,
+     fillColor: 'blue'
+   })
+ }
+}
+
+const stage = new Stage(document.getElementById('canvas'))
+stage.width = 100
+stage.height = 100
+stage.addChild(new Circle())
+```
+To make an object interactive i.e. receive input events, it needs to extend the [hitTest](https://github.com/alexbolbat/smpl-canvas#hittest-x-number-ynumber-boolean) method to define object bounds. If an area to click needs to be defined by object size and position, it’s enough to assign the [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas#hittestinbounds-boolean-readwrite) property.
+```
+class Circle extends DisplayObject {
+ constructor () {
+   super()
+
+   this.width = 80
+   this.height = 80
+   this.hitTestInBounds = true
+   this.cursor = 'pointer'
+ }
+…
+```
+Now the mouse cursor is changed to “pointer” when it hovers the circle. But it is not a perfect solution in this particular case since the area is defined by the 80x80 square but not a circle. It changes the cursor out of the circle area (in the corners). So instead of changing the [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas#hittestinbounds-boolean-readwrite) property, it is better to override the [hitTest](https://github.com/alexbolbat/smpl-canvas#hittest-x-number-ynumber-boolean) method.
+```
+override hitTest (x: number, y: number): boolean {
+ const radius = Math.min(this.width, this.height) / 2
+ // returning true if the distance to the center is less than radius
+ return Math.sqrt((x - radius) ** 2 + (y - radius) ** 2) <= radius
+}
+```
+To redraw the object, there is an [update](https://github.com/alexbolbat/smpl-canvas#updated-signal-read-only) signal property. It is used when visual changes need to be applied. It tells [Stage](https://github.com/alexbolbat/smpl-canvas#stage) the object was changed and it will redraw the object on the next frame
+private isOn = false
+
+constructor (radius: number) {
+ super()
+
+ this.width = radius * 2
+ this.height = radius * 2
+ this.cursor = 'pointer'
+
+ // adding listeners for mouse click event
+ this.click.add(this.handleClick, this)
+}
+
+private handleClick () {
+ this.isOn = !this.isOn
+ this.updated.emit()
+}
+
+override render (renderTools: RenderTools) {
+ renderTools.circle({
+   x: 40,
+   y: 40,
+   radius: 40,
+   fillColor: this.isOn ? '#d93434' : '#2ac942'
+ })
+}
+
+override hitTest (x: number, y: number): boolean {
+  const radius = Math.min(this.width, this.height) / 2
+  return Math.sqrt((x - radius) ** 2 + (y - radius) ** 2) <= radius
+}
+Display objects can be grouped and stored in containers. Base class for containers is [DisplayObjectContainer](https://github.com/alexbolbat/smpl-canvas#displayobjectcontainer).
+const container = new DisplayObjectContainer()
+container.addChild(new Circle(40, 'green'))
+container.addChild(new Circle(40, 'red')).x = 90
+stage.addChild(container)
+Their inheritance can be used as creating objects templates. As [DisplayObjectContainer](https://github.com/alexbolbat/smpl-canvas#displayobjectcontainer) extends [DisplayObject](https://github.com/alexbolbat/smpl-canvas#displayobject), it also can render primitives. Child components are drawn on top of their parents.
+```
+class PairOfCircles extends DisplayObjectContainer {
+ constructor () {
+   super()
+
+   this.addChild(new Circle(40, 'green'))
+   this.addChild(new Circle(40, 'red')).x = 90
+ }
+}
+
+const container = new DisplayObjectContainer()
+container.addChild(new PairOfCircles())
+container.addChild(new PairOfCircles()).y = 90
+stage.addChild(container)
+```
+Some components like `Grid`, `VerticalLayout` are able to manage their children's positioning automatically. It is achieved using the [updateLayout](https://github.com/alexbolbat/smpl-canvas#updatelayout-) method. This method is called before drawing and can be overridden to implement custom positioning and sizing.
+```
+const colors = ['#32a852', '#2387c4', '#631ad9', '#d91a7a', '#ff8940']
+const grid = new Grid()
+colors.forEach((color, i) => {
+ grid.addInCell(new Circle(10, color), i, 0)
+ grid.addInCell(new TextField(color), i, 1)
+})
+stage.addChild(grid)
+```
 # Class diagram
 ![Class diagram](/canvas.drawio.png)
 # DisplayObject
-A base class to draw primitives. This class is supposed to be overridden to provide instructions on: how to draw it, behave depending on mouse events, etc. An instance of the subclasses needs to be used as a child of a Stage instance to be rendered and receive input events.
+A base class to draw primitives. This class is supposed to be overridden to provide instructions on: how to draw it, behave depending on mouse events, etc. An instance of the subclasses needs to be used as a child of a [Stage](https://github.com/alexbolbat/smpl-canvas#stage) instance to be rendered and receive input events.
 ## Instance properties
 ### cursor: CursorType (read/write)
 Is used to change the type of mouse cursor when it is over the current display object. Checking if the object is under mouse cursor depends on the hitTest method.
