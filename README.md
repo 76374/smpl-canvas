@@ -17,7 +17,8 @@ stage.width = 100
 stage.height = 100
 stage.addChild(new Circle())
 ```
-[Output](/ex001.png)
+![Output](/ex001.png)
+
 To make an object interactive i.e. receive input events, it needs to extend the [hitTest](https://github.com/alexbolbat/smpl-canvas#hittest-x-number-ynumber-boolean) method to define object bounds. If an area to click needs to be defined by object size and position, it’s enough to assign the [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas#hittestinbounds-boolean-readwrite) property.
 ```
 class Circle extends DisplayObject {
@@ -81,7 +82,8 @@ container.addChild(new Circle(40, 'green'))
 container.addChild(new Circle(40, 'red')).x = 90
 stage.addChild(container)
 ```
-[Output](/ex002.png)
+![Output](/ex002.png)
+
 Their inheritance can be used as creating objects templates. As [DisplayObjectContainer](https://github.com/alexbolbat/smpl-canvas#displayobjectcontainer) extends [DisplayObject](https://github.com/alexbolbat/smpl-canvas#displayobject), it also can render primitives. Child components are drawn on top of their parents.
 ```
 class PairOfCircles extends DisplayObjectContainer {
@@ -97,8 +99,9 @@ const container = new DisplayObjectContainer()
 container.addChild(new PairOfCircles())
 container.addChild(new PairOfCircles()).y = 90
 stage.addChild(container)
-[Output](/ex003.png)
 ```
+![Output](/ex003.png)
+
 Some components like `Grid`, `VerticalLayout` are able to manage their children's positioning automatically. It is achieved using the [updateLayout](https://github.com/alexbolbat/smpl-canvas#updatelayout-) method. This method is called before drawing and can be overridden to implement custom positioning and sizing.
 ```
 const colors = ['#32a852', '#2387c4', '#631ad9', '#d91a7a', '#ff8940']
@@ -108,8 +111,9 @@ colors.forEach((color, i) => {
  grid.addInCell(new TextField(color), i, 1)
 })
 stage.addChild(grid)
-[Output](/ex004.png)
 ```
+![Output](/ex004.png)
+
 # Class diagram
 ![Class diagram](/canvas.drawio.png)
 # DisplayObject
