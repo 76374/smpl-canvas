@@ -1,3 +1,5 @@
+# Class diagram
+![Class diagram](/canvas.drawio.png)
 # DisplayObject
 A base class to draw primitives. This class is supposed to be overridden to provide instructions on: how to draw it, behave depending on mouse events, etc. An instance of the subclasses needs to be used as a child of a Stage instance to be rendered and receive input events.
 ## Instance properties
