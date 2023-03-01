@@ -40,7 +40,7 @@ override hitTest (x: number, y: number): boolean {
  return Math.sqrt((x - radius) ** 2 + (y - radius) ** 2) <= radius
 }
 ```
-To redraw the object, there is an [update](https://github.com/alexbolbat/smpl-canvas#updated-signal-read-only) signal property. It is used when visual changes need to be applied. It tells [Stage](https://github.com/alexbolbat/smpl-canvas#stage) the object was changed and it will redraw the object on the next frame
+To redraw objects, there is an [update](https://github.com/alexbolbat/smpl-canvas#updated-signal-read-only) signal property. It is used when visual changes need to be applied. It tells [Stage](https://github.com/alexbolbat/smpl-canvas#stage) the object was changed and it will redraw the object on the next frame
 ```
 private isOn = false
 
@@ -68,11 +68,6 @@ override render (renderTools: RenderTools) {
    // changing color depending on isOn property
    fillColor: this.isOn ? '#d93434' : '#2ac942'
  })
-}
-
-override hitTest (x: number, y: number): boolean {
-  const radius = Math.min(this.width, this.height) / 2
-  return Math.sqrt((x - radius) ** 2 + (y - radius) ** 2) <= radius
 }
 ```
 Display objects can be grouped and stored in containers. Base class for containers is [DisplayObjectContainer](https://github.com/alexbolbat/smpl-canvas#displayobjectcontainer).
@@ -120,9 +115,9 @@ stage.addChild(grid)
 A base class to draw primitives. This class is supposed to be overridden to provide instructions on: how to draw it, behave depending on mouse events, etc. An instance of the subclasses needs to be used as a child of a [Stage](https://github.com/alexbolbat/smpl-canvas#stage) instance to be rendered and receive input events.
 ## Instance properties
 ### cursor: CursorType (read/write)
-Is used to change the type of mouse cursor when it is over the current display object. Checking if the object is under mouse cursor depends on the hitTest method.
+Is used to change the type of mouse cursor when it is over the current display object. Checking if the object is under mouse cursor depends on the [hitTest](https://github.com/alexbolbat/smpl-canvas#hittest-x-number-ynumber-boolean) method.
 ### hitTestInBounds: boolean (read/write)
-When the value is set to true, the hitTest method returns true (if it’s not overridden) when the mouse cursor is within a rectangle defined by width and height of the current display object. 
+When the value is set to *true*, the [hitTest](https://github.com/alexbolbat/smpl-canvas#hittest-x-number-ynumber-boolean) method returns also *true* by default when the mouse cursor is within a rectangle defined by [width](https://github.com/alexbolbat/smpl-canvas#width-number-readwrite) and [height](https://github.com/alexbolbat/smpl-canvas#height-number-readwrite) of the current display object. 
 Example:
 Makes the “pointer cursor” over a square area size of 20 pixels.
 ```
@@ -136,8 +131,7 @@ constructor () {
 }
 ```
 ### mouseClick: Signal<MouseData> (read-only)
-Triggers when the current object is clicked. 
-Example:
+Triggers when the current object is clicked.
 ```
 constructor () {
   super()
@@ -159,6 +153,9 @@ Triggers when the mouse cursor leaves the current object.
 Describes the length of the current object in y-axis. 0 by default. This value can be set when the object instance is created (e.g. in the constructor) to have correct layout calculation and avoid overlapping with other objects within layout containers like `VerticalLayout`, `Grid` etc. It doesn’t stretch or shrink the object by default. To redraw the object according to its new height the setter can be overridden to call the update signal to force the redrawing process if the height takes place in the render method.
 In the following example the display object is a vertical line, which is updated when its width changes.
 ```
+override get width (): number {
+  return super.width
+}
 override set height(value: number) {
  super.height = value
  this.updated.emit()
@@ -179,7 +176,7 @@ Describes the width of the current object. Works similar to height property but 
 ### render (tools: RenderTools)
 The method is supposed to be overridden to use [RenderTools](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#rendertools) passed as the argument in order to provide instructions to render shapes, lines, etc. 
 ### hitTest (x: number, y:number): boolean
-Takes coordinates of the mouse cursor in the object local dimension. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) automatically when the display object is direct or nested its child. If [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittestinbounds-boolean-readwrite) property has been set to true, the method checks if the coordinates are within a rect defined by [width](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#width-number-readwrite) and [height](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#height-number-readwrite) of the current object.
+Defines an area to receive input event. Takes coordinates of the mouse cursor in the object local dimension and suuposed to return a boolean which indicates if the coordinates are over the current object. By default returns `false`. Can be overridden to define a custom hit area for example if the object is a circle, line, etc. This method and mouse signals are called / triggered by [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) automatically when the display object is direct or nested its child. If [hitTestInBounds](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#hittestinbounds-boolean-readwrite) property has been set to true, the method checks if the coordinates are within a rect defined by [width](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#width-number-readwrite) and [height](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#height-number-readwrite) of the current object.
 ```
 // circle hit area. It checks if distance from mouse coordinates to the center of the circle is less or equal then its radius
 override hitTest (x: number, y: number): boolean {
@@ -189,19 +186,13 @@ override hitTest (x: number, y: number): boolean {
 ### dispose
 Cleans up all signals. Can be overridden to clean up custom ones or remove references to other objects to avoid memory leaks.
 # RenderTools
-Provides an interface to draw shapes, lines, text. A RenderTools instance is provided to the render method of [DisplayObject](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#displayobject) as an argument. By calling the methods described below it accumulates data which is used in `Render` to draw display objects. To make the drawing process work it is enough to create a [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) instance and add a display object as its child. Draw methods return the current instance to chain calls.
-```
-const stage = new Stage(document.getElementById('canvas'))
-const rect = new RectContainer()
-rect.fillColor = 'blue'
-stage.addChild(rect)
-```
+Provides an interface to draw shapes, lines, text. A RenderTools instance is provided to the render method of [DisplayObject](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#displayobject) as an argument. By calling the RenderTools draw methods it accumulates data which is used in `Renderer` to draw display objects. To make the drawing process work it is enough to create a [Stage](https://github.com/alexbolbat/smpl-canvas/blob/main/README.md#stage) instance and add a display object as its child. A RenderTools instance is provided to the [render](https://github.com/alexbolbat/smpl-canvas#render-tools-rendertools) method of DispalyObject.
 ## Instance properties:
 ### renderProps: RenderProps[] (readonly)
-Information which is used by Render about sequence of operation required for object drawing. 
+Information which is used by Render about sequence of operations required for object drawing. 
 ## Instance methods:
 ### line (line: Point[], color?: string): RenderTools 
-Draws a broken line defined by provided points abd color. Returns current instance to chain draw calls.
+Draws a line or a broken line defined by provided points abd color. Returns current instance to chain draw calls.
 ### circle (circle: Circle): RenderTools
 Draws a circle. `Circle` data structure defines center, radius, fill and stroke colors. Returns current instance to chain draw calls.
 ### shape (shape: Shape): RenderTools
