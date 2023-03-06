@@ -250,9 +250,9 @@ Update process includes next steps:
 1. Cleaning up the canvas
 2. Unregistering objects which are not belong to Stage direct or nested children. E.g. which were removed using removeChild method of any of nested DisplayObjectContainers.
 2. Registering new objects that were added to the rendre hierarchy (become direct or nested children).
-updating layouts: calling updateLayout methods of DisplayObjectContainers, TextFields starting from the deepest child going upwards until it meats Stage.
-3. Updating canvas size
-4. Rendering all display objects (using their render methods)
+3. Updating layouts: calling updateLayout methods of DisplayObjectContainers, TextFields starting from the deepest child going upwards until it meets Stage.
+4. Updating canvas size
+5. Rendering all display objects (using their render methods)
 ## Constructor
 Required HTMLCanvasElement as an argument.
 ## Instance methods
